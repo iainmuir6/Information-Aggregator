@@ -10,3 +10,6 @@ pyvenv.cfg
 # Secrets/Constants
 secrets.json
 constants.py
+
+# Other
+__pycache__/
