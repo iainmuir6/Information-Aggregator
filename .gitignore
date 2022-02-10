@@ -1,0 +1,12 @@
+# Virtual Environment Directories/Files
+bin
+lib
+share
+pyvenv.cfg
+
+# Jupyter Checkpoints
+.ipynb_checkpoints
+
+# Secrets/Constants
+secrets.json
+constants.py
