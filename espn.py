@@ -377,7 +377,7 @@ def format_scores(score):
             format_leaders,
             axis=1
         )
-        leaders = """
+        html = """
             <html>
                 <style type='text/css'>
                     .header {
@@ -438,6 +438,7 @@ def format_scores(score):
                 </div>
             </html>
         """.strip()
+        leaders = dp.HTML(html)
 
         blocks.extend(
             [dp.Divider(), leaders]
@@ -445,14 +446,14 @@ def format_scores(score):
 
     left = not left
 
-    return game
-    # return dp.Group(
-    #     game,
-    #     dp.Toggle(
-    #         *blocks,
-    #         label=f'Analysis: {short_name}'
-    #     )
-    # )
+    # return game
+    return dp.Group(
+        game,
+        dp.Toggle(
+            *blocks,
+            label=f'Analysis: {short_name}'
+        )
+    )
 
 
 def scores(s):
