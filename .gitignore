@@ -12,4 +12,5 @@ secrets.json
 constants.py
 
 # Other
+*.pyc
 __pycache__/
