@@ -11,6 +11,9 @@ pyvenv.cfg
 secrets.json
 constants.py
 
-# Other
+# Pycache
 *.pyc
 __pycache__/
+
+# Other
+Output/
