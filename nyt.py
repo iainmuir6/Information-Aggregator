@@ -58,15 +58,20 @@ def semantics(company, api_key):
     return articles
 
 
-def format_article(article):
+def format_article(article, source='NYT'):
     """
 
     :param article
+    :param source
     :return:
     """
 
-    section, _, title, abstract, url, _, byline, _, _, _, date, _, _, _, _, _, _, img, _ = article
-    date = datetime.datetime.strptime(date[:-6], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S %p')
+    if source == 'NYT':
+        section, _, title, abstract, url, _, byline, _, _, _, date, _, _, _, _, _, _, img, _ = article
+        date = datetime.datetime.strptime(date[:-6], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S %p')
+    else:
+        _, byline, _, img, date, _, source, _, title, _, url, _, _, abstract, _, _ = article
+        date = datetime.datetime.strptime(str(date)[:-6], '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%y %I:%M:%S %p')
 
     media = dp.HTML(f"""
         <img src="{img}" width="200"/>
@@ -77,6 +82,10 @@ def format_article(article):
             <style type='text/css'>
                 h4 {
                     text-align:left;
+                }
+                a {
+                    text-decoration:none;
+                    color:#000000;
                 }
                 p {
                     text-align:left;
@@ -89,7 +98,7 @@ def format_article(article):
                 }
             </style>
             
-            <h4>""" + title + """</h4>
+            <h4><a href='""" + url + """' target="_blank">""" + title + """</a></h4>
             <p class='info'>
                 <span><i>""" + byline + '<br>' + date + """</i></span><br><br>
                 """ + abstract + """
