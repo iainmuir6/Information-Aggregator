@@ -12,9 +12,9 @@ datapane login --token=55010cebc170ecfbeddb82838c360776bf36f6be
 # Run Jupyter Notebook
 jupyter nbconvert --to notebook --execute aggregator.ipynb --output aggregator.ipynb
 
-# Commit updated run logg
-git commit -m "daily run; updating log..."
-git push
-
 # Deactivate Virtual Environment
 deactivate
+
+# Commit updated run log
+git commit -m "daily run; updating log..." -- run_log.txt
+git push

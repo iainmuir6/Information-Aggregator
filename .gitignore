@@ -17,3 +17,5 @@ __pycache__/
 
 # Other
 Output/
+etc
+robinhood.json
