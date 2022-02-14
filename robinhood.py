@@ -21,11 +21,12 @@ def authenticate_(username, password):
     :return:
     """
 
-    r.authentication.login(
+    r.login(
         username=username,
         password=password,
         expiresIn=30,
-        scope='r'
+        scope='r',
+        store_session=True
     )
     return r
 
