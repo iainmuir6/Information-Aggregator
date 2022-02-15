@@ -7,12 +7,16 @@
 """
 
 import robin_stocks.robinhood as r
+from nyt import format_article
 from finnhub import big_number
 from functools import partial
+from datetime import timedelta
 import datapane as dp
 import pandas as pd
+import datetime
 
 
+# ----------------- AUTHENTICATION PROCEDURE -----------------
 def authenticate_(username, password):
     """
 
@@ -31,6 +35,7 @@ def authenticate_(username, password):
     return r
 
 
+# ---------------------- BUILD HOLDINGS ----------------------
 def load_portfolio(client):
     """
 
@@ -61,6 +66,116 @@ def load_portfolio(client):
     return [stock_tickers, etf_tickers, crypto_tickers], [stock, etf, crypto], portfolio
 
 
+# ----------------- ROBINHOOD NEWS FUNCTIONS -----------------
+def robinhood_news(client, ticker):
+    """
+
+    :param: client
+    :param: ticker
+    :return:
+    """
+    news = client.stocks.get_news(ticker)
+    news = pd.DataFrame(news)
+    news['published_at'] = pd.to_datetime(news['published_at'])
+    news['published'] = news['published_at'].dt.date
+
+    yesterday = datetime.date.today() - timedelta(days=1)
+    recent_news = news.loc[
+        news['published'] >= yesterday
+        ]
+    recent_news['preview_text'] = recent_news['preview_text'].apply(clean_summary)
+
+    article_groups = list(
+        recent_news.apply(
+            lambda row: format_article(row, 'Robinhood'),
+            axis=1
+        ).values
+    )
+
+    related_htmls = recent_news.related_instruments.apply(
+        lambda i: related_instruments(client, i)
+    )
+
+    article_groups = list(map(
+        lambda article, html: dp.Group(
+            article,
+            html
+        ),
+        article_groups,
+        related_htmls
+    ))
+
+    return article_groups
+
+
+def format_related(client, id_):
+    """
+
+    :param: client
+    :param: id_
+    :return:
+    """
+    q = client.stocks.get_stock_quote_by_id(id_)
+    symbol, price, p_close = q['symbol'], q['last_trade_price'], q['previous_close']
+    delta = (float(price) / float(p_close) - 1) * 100
+    arrow = 'up' if delta >= 0 else 'down'
+
+    return f"""
+        <b>{symbol}</b>&nbsp;<div class="triangle-{arrow}"></div>&nbsp;{round(delta, 2)}%
+    """.strip()
+
+
+def related_instruments(client, id_list):
+    """
+
+    :param: client
+    :param: id_list
+    :return:
+    """
+    instruments = list(map(
+        lambda id_: format_related(client, id_), id_list
+    ))
+    html = """
+        <html>
+            <style type='text/css'>
+                .related {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .triangle-up {
+                    width: 0;
+                    height: 0;
+                    border-left: 8px solid transparent;
+                    border-right: 8px solid transparent;
+                    border-bottom: 15px solid #00FF00;
+                }
+                .triangle-down {
+                    width: 0;
+                    height: 0;
+                    border-top: 15px solid #FF0000;
+                    border-left: 8px solid transparent;
+                    border-right: 8px solid transparent;
+                }
+            </style>
+            <div class="related">
+                """ + "&nbsp;|&nbsp;".join(instruments) + """
+            </div>
+        </html>
+        """.strip()
+    return dp.HTML(html)
+
+
+def clean_summary(summary):
+    """
+
+    :param: summary
+    :return:
+    """
+    return summary.replace('Text size\n\n', "").replace('Summary\n\nSummary Related documents ', "").strip()
+
+
+# ----------------- MISCELLANEOUS HELPERS -----------------
 def get_scroll_objects(row):
     """
 
@@ -72,7 +187,7 @@ def get_scroll_objects(row):
     delta = f'<span class="{"up" if delta >= 0 else "down"}">{round(delta * 100, 2)}%</span>'
 
     return f"""
-        <a href="#"><b>{symbol}</b>&nbsp;<span class="price">${round(float(current), 2)}</span>&nbsp;{delta}</a>&nbsp;&nbsp;
+    <a href="#"><b>{symbol}</b>&nbsp;<span class="price">${round(float(current), 2)}</span>&nbsp;{delta}</a>&nbsp;&nbsp;
     """.strip()
 
 

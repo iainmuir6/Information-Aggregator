@@ -71,6 +71,8 @@ def format_article(article, source='NYT'):
         date = datetime.datetime.strptime(date[:-6], '%Y-%m-%dT%H:%M:%S').strftime('%m/%d/%y %I:%M:%S %p')
     else:
         _, byline, _, img, date, _, source, _, title, _, url, _, _, abstract, _, _ = article
+        if byline is None or byline == "":
+            byline = source
         date = datetime.datetime.strptime(str(date)[:-6], '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%y %I:%M:%S %p')
 
     media = dp.HTML(f"""
