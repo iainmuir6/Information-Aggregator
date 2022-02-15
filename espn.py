@@ -343,7 +343,7 @@ def format_scores(score, upcoming):
     # TODO Make an Iterable
     global left
 
-    _, _, date, name, short_name, _, competitions, links, status = score
+    _, _, date, name, short_name, _, competitions, links, *other = score
     link = links[0]['href']
 
     c = competitions[0]
