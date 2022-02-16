@@ -418,9 +418,11 @@ def format_scores(score, upcoming):
         ])
         formatted_stats.style.set_td_classes(cell_color)
         formatted_stats = dp.Table(formatted_stats)
-        blocks.extend(
-            [dp.Divider(), formatted_stats]
-        )
+
+        # TODO Table works fine... saving space?
+        # blocks.extend(
+        #     [dp.Divider(), formatted_stats]
+        # )
 
     leaders_h, leaders_a = home[2], away[2]
     if leaders_h is not None and leaders_a is not None:
@@ -548,8 +550,8 @@ def group_sport(sport, results, upcoming):
         dp.Select(
             results_group,
             upcoming_group,
-            highlights_group,
-            standings_group
+            # highlights_group,
+            # standings_group
         ),
         label=sport
     )

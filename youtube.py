@@ -38,7 +38,7 @@ def build_client():
     api_key = 'AIzaSyBW3cmEgVnwWUeCoV0uDov_YrEoJvMiz84'
     api_service_name = "youtube"
     api_version = "v3"
-    client_secrets_file = "../InformationAggregator/client_secret.json"
+    client_secrets_file = "../GoogleAPI/youtube/client_secret.json"
     scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
     credentials = None
 
