@@ -27,10 +27,10 @@ def authenticate_(username, password):
 
     r.login(
         username=username,
-        password=password,
-        expiresIn=30,
-        scope='r',
-        store_session=True
+        password=password
+        # expiresIn=30,
+        # scope='r',
+        # store_session=True
     )
     return r
 
