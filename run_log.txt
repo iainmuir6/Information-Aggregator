@@ -37,3 +37,22 @@
 2022-02-21 14:56:28.888658, 2975323772.py, 2, KeyError, Failed Robinhood Authentication
 2022-02-21 14:59:34.838053, 2748892805.py, 2, TypeError, Failed to get ESPN Results
 2022-02-21 15:01:33.840933, 2748892805.py, 2, TypeError, Failed to get ESPN Results
+2022-03-11 23:48:24.880814, 2748892805.py, 2, KeyError, Failed to get ESPN Results
+2022-03-11 23:48:25.457462, 3621554633.py, 2, TypeError, Failed to get ESPN Schedule
+2022-03-11 23:52:21.090284, 2748892805.py, 2, KeyError, Failed to get ESPN Results
+2022-03-11 23:54:25.273409, 2588328303.py, 2, KeyError, Failed to get ESPN Results
+2022-03-11 23:56:07.470359, 2588328303.py, 2, KeyError, Failed to get ESPN Results
+2022-03-12 00:00:10.644367, 2588328303.py, 2, KeyError, Failed to get ESPN Results
+2022-03-12 22:34:08.255532, 2748892805.py, 2, TypeError, Failed to get ESPN Results
+2022-03-12 22:34:09.162984, 3621554633.py, 2, TypeError, Failed to get ESPN Schedule
+2022-03-12 22:43:31.919748, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
+2022-03-12 22:44:08.798603, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
+2022-03-12 22:44:33.314496, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
+2022-03-12 22:45:41.630883, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
+2022-03-21 11:44:02.055647, 2429694997.py, 2, ValueError, Failed to get ESPN Results
+2022-03-21 11:49:52.672891, 2429694997.py, 2, ValueError, Failed to get ESPN Results
+2022-03-21 12:00:36.226774, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
+2022-03-21 12:00:46.057034, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
+2022-03-21 12:02:35.627685, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
+2022-03-21 12:04:35.202089, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
+2022-03-21 12:05:48.384832, 23019337.py, 2, requests.exceptions.HTTPError, Report Upload Error; FATAL.
