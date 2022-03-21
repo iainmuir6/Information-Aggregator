@@ -18,6 +18,7 @@
 ...
 
 <p align="center">
- <img src="https://github.com/iainmuir6/Portfolio-Analysis/blob/main/snippets/holdings.png" width="300"/>
- <img src="https://github.com/iainmuir6/Portfolio-Analysis/blob/main/snippets/news.png" width="650"/>
+ <img src="https://github.com/iainmuir6/Information-Aggregator/blob/main/snippets/news.png" width="750"/> <br />
+ <img src="https://github.com/iainmuir6/Information-Aggregator/blob/main/snippets/market.png" width="500"/>
+ <img src="https://github.com/iainmuir6/Information-Aggregator/blob/main/snippets/covid.png" width="487"/> <br />
 </p>
