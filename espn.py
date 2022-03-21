@@ -8,7 +8,7 @@
 
 # Import Libraries
 from errors import ErrorHandler, get_error_info
-from constants import SPORT_LOGOS
+from constants import SPORT_LOGOS, PLACEHOLDER
 from datetime import timedelta
 from functools import partial
 import datapane as dp
@@ -258,8 +258,7 @@ def parse_team(t, upcoming):
     if not isinstance(short_display, str):
         short_display = display
 
-    placeholder = 'https://freepikpsd.com/file/2019/10/placeholder-image-png-5-Transparent-Images.png'
-    logo = team.get('logo', placeholder)
+    logo = team.get('logo', PLACEHOLDER)
 
     rank = None if rank == '' else rank
     if rank is not None:
@@ -272,12 +271,17 @@ def parse_team(t, upcoming):
         stats.columns = ['Stat', short_display]
 
     if leaders is not None and not upcoming:
-        leaders = [
-            [
-                lead['abbreviation'], lead['leaders'][0]['value'],
-                lead['leaders'][0]['athlete']['fullName'], lead['leaders'][0]['athlete']['headshot']
-            ] for lead in leaders
-        ]
+        leaders = []
+        for lead in leaders:
+            abbrev, val, name = lead['abbreviation'], \
+                                lead['leaders'][0]['value'], \
+                                lead['leaders'][0]['athlete']['fullName']
+            try:
+                headshot = lead['leaders'][0]['athlete']['headshot']
+            except KeyError:
+                headshot = PLACEHOLDER
+            leaders.append([abbrev, val, name, headshot])
+
         leaders = pd.DataFrame(
             leaders, columns=['Stat', 'Value', 'Player', 'Headshot']
         )
@@ -349,9 +353,9 @@ def format_scores(score, upcoming):
     c = competitions[0]
     attendance = c.get('attendance', None)
     attendance = "{:,}".format(attendance) if attendance is not None else 'N/A'
-    venue = c.get('venue', '')
+    venue = c.get('venue', None)
     competitors = c['competitors']
-    venue = f"{venue['fullName']} ({', '.join(venue['address'].values())})"
+    venue = f"{venue['fullName']} ({', '.join(venue['address'].values())})" if venue is not None else ''
 
     results = list(map(
         lambda comp: parse_team(comp, upcoming), competitors
@@ -386,74 +390,75 @@ def format_scores(score, upcoming):
     blocks = list()
     home_team, away_team = name.split(' at ')
 
-    stats_h, stats_a = home[1], away[1]
-    if stats_h is not None and stats_a is not None:
-        # TODO Actual Join...
-        stats = stats_a
-        stats[stats_h.columns[1]] = stats_h.iloc[:, 1]
-        stats = stats.drop_duplicates(subset=['Stat']).set_index("Stat")
-        formatted = stats.apply(
-            format_stats,
-            axis=1,
-            result_type='expand'
-        )
-        formatted_stats = pd.concat(
-            [formatted[0], formatted[1]],
-            axis=1
-        )
-        formatted_stats.columns = stats.columns
-        cell_color = pd.concat(
-            [formatted[2], formatted[3]],
-            axis=1
-        )
-        cell_color.columns = stats.columns
-        formatted_stats.style.set_table_styles([
-            # Cell Hover
-            {'selector': 'td:hover', 'props': [('background-color', '#ffffb3')]},
-            # Create Internal CSS Classes
-            {'selector': '.true', 'props': 'background-color: #e6ffe6;'},
-            {'selector': '.false', 'props': 'background-color: #ffe6e6;'},
-            # Center/Bold Table Text
-            {'selector': 'td', 'props': 'text-align: center; font-weight: bold;'}
-        ])
-        formatted_stats.style.set_td_classes(cell_color)
-        formatted_stats = dp.Table(formatted_stats)
+    # stats_h, stats_a = home[1], away[1]
+    # if stats_h is not None and stats_a is not None:
+    #     # TODO Actual Join...
+    #     stats = stats_a
+    #     stats[stats_h.columns[1]] = stats_h.iloc[:, 1]
+    #     stats = stats.drop_duplicates(subset=['Stat']).set_index("Stat")
+    #     formatted = stats.apply(
+    #         format_stats,
+    #         axis=1,
+    #         result_type='expand'
+    #     )
+    #     formatted_stats = pd.concat(
+    #         [formatted[0], formatted[1]],
+    #         axis=1
+    #     )
+    #     formatted_stats.columns = stats.columns
+    #     cell_color = pd.concat(
+    #         [formatted[2], formatted[3]],
+    #         axis=1
+    #     )
+    #     cell_color.columns = stats.columns
+    #     formatted_stats.style.set_table_styles([
+    #         # Cell Hover
+    #         {'selector': 'td:hover', 'props': [('background-color', '#ffffb3')]},
+    #         # Create Internal CSS Classes
+    #         {'selector': '.true', 'props': 'background-color: #e6ffe6;'},
+    #         {'selector': '.false', 'props': 'background-color: #ffe6e6;'},
+    #         # Center/Bold Table Text
+    #         {'selector': 'td', 'props': 'text-align: center; font-weight: bold;'}
+    #     ])
+    #     formatted_stats.style.set_td_classes(cell_color)
+    #     formatted_stats = dp.Table(formatted_stats)
+    #
+    #     # TODO Table works fine... saving space?
+    #     # blocks.extend(
+    #     #     [dp.Divider(), formatted_stats]
+    #     # )
 
-        # TODO Table works fine... saving space?
-        # blocks.extend(
-        #     [dp.Divider(), formatted_stats]
-        # )
-
-    leaders_h, leaders_a = home[2], away[2]
-    if leaders_h is not None and leaders_a is not None:
-        leaders = leaders_h.merge(
-            leaders_a,
-            on='Stat'
-        )
-        leaders = leaders.apply(
-            format_leaders,
-            axis=1
-        )
-        html = """
-            <html>
-                """ + leader_css() + """
-                <div class="grid-container">
-                    <div></div>
-                    <div class="header"><b><u>""" + away_team.strip() + """</u></b></div>
-                    <div></div>
-                    <div class="header"><b></b></div>
-                    <div></div>
-                    <div class="header"><b><u>""" + home_team.strip() + """</u></b></div>
-                    <div></div>
-                    """ + "\n".join(leaders) + """
-                </div>
-            </html>
-        """.strip()
-        leaders = dp.HTML(html)
-
-        blocks.extend(
-            [dp.Divider(), leaders]
-        )
+    # leaders_h, leaders_a = home[2], away[2]
+    # if leaders_h is not None and leaders_a is not None:
+    #     leaders = leaders_h.merge(
+    #         leaders_a,
+    #         on='Stat'
+    #     )
+    #     leaders = leaders.apply(
+    #         format_leaders,
+    #         axis=1
+    #     )
+    #     html = """
+    #         <html>
+    #             """ + leader_css() + """
+    #             <div class="grid-container">
+    #                 <div></div>
+    #                 <div class="header"><b><u>""" + away_team.strip() + """</u></b></div>
+    #                 <div></div>
+    #                 <div class="header"><b></b></div>
+    #                 <div></div>
+    #                 <div class="header"><b><u>""" + home_team.strip() + """</u></b></div>
+    #                 <div></div>
+    #                 """ + "\n".join(leaders) + """
+    #             </div>
+    #         </html>
+    #     """.strip()
+    #     leaders = dp.HTML(html)
+    #
+    #     # TODO Table works fine... saving space?
+    #     # blocks.extend(
+    #     #     [dp.Divider(), leaders]
+    #     # )
 
     left = not left
 
@@ -486,7 +491,7 @@ def scores(s, upcoming=False):
     today = datetime.date.today()
     date = (today - timedelta(days=1)).strftime('%Y%m%d') if not upcoming else today.strftime('%Y%m%d')
 
-    api_link = f"http://site.api.espn.com/apis/site/v2/sports/{code}/scoreboard?dates={date}"
+    api_link = f"http://site.api.espn.com/apis/site/v2/sports/{code}scoreboard?dates={date}"
 
     with requests.get(api_link) as r:
         resp = json.loads(
