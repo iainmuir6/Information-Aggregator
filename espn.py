@@ -555,8 +555,8 @@ def group_sport(sport, results, upcoming):
         dp.Select(
             results_group,
             upcoming_group,
-            # highlights_group,
-            # standings_group
+            highlights_group,
+            standings_group
         ),
         label=sport
     )
